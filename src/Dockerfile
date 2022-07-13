@@ -133,6 +133,7 @@ ENV BASE_IMAGE=$BASE_IMAGE
 # hadolint ignore=DL3009
 RUN groupadd -g 1000 -r artemis && useradd -r -u 1000 -g artemis artemis && \
     apt-get -qq -o=Dpkg::Use-Pty=0 update && \
+    apt-get -qq -o=Dpkg::Use-Pty=0 remove curl -y && \
     if [ "${BASE_IMAGE}" != "${BASE_IMAGE%stretch}" ]; then \
       apt-get -qq -o=Dpkg::Use-Pty=0 install -y --no-install-recommends \
           libaio1=0.3.110-3 \
