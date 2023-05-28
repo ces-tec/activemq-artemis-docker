@@ -1,5 +1,17 @@
 #!/usr/bin/env bats
 
+setup () {
+  	export CONTAINER_LOG_OUTPUT=tmp.log
+}
+
+teardown () {
+    if [ -e tmp.log ]; then
+      echo "Log output:"
+      cat tmp.log
+      rm tmp.log
+    fi
+}
+
 @test "docker container can run with no arguments" {
   	GOSS_FILES_PATH=$BATS_TEST_DIRNAME/assets GOSS_VARS="vars.yaml" GOSS_WAIT_OPTS="-r 60s -s 1s > /dev/null" dgoss run -it --rm -h testHostName.local ${COORDINATES}
 }
@@ -14,7 +26,7 @@
 
 	export UUID="$(uuidgen)"
 	
-	docker run -d --name "$UUID" -h testHostName.local -e LOG_FORMATTER=JSON -e ARTEMIS_PERF_JOURNAL=NEVER ${COORDINATES}
+	docker run -d --name "$UUID" -h testhostname.local -e LOG_FORMATTER=JSON -e ARTEMIS_PERF_JOURNAL=NEVER ${COORDINATES}
     
 	n=0; until [ "$n" -ge 5 ]
    	do

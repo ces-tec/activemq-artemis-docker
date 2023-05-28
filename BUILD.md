@@ -8,9 +8,9 @@ To build the ActiveMQ Artemis Docker Image the following tools are necessary:
 
 - Docker
 - Make
-- goss and dgoss
-- shellcheck
-- bats-core
+- [goss and dgoss](https://github.com/goss-org/goss/blob/master/extras/dgoss/README.md)
+- shellcheck (snap install)
+- bats
 - jq
 - uuidgen (may need to install uuid and soft link as uuidgen depending on distro)
 
@@ -41,4 +41,6 @@ make 2.6.0-alpine
 It is also possible to just build the image without testing with `make build_2.8.0`, just testing: `make test_2.8.0`, running the image: `make run_2.8.0` or even run the image for a shell `make runsh_2.8.0`.
 
 You can also override the artemis binary distribution url by passing a parameter containing a zip file containing the distribution.  ie.  `make BUILD_ARGS="--build-arg ACTIVEMQ_DISTRIBUTION_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-artemis/2.6.4/apache-artemis-2.8.0-bin.zip" 2.8.0`.   Note that you also need to pass in the version # as the first argument (ie 2.8.0)
+
+You can build without using the cache by setting REBUILD=y in the environment and suppress the --quiet switch by setting DEBUG=y
 

@@ -137,8 +137,8 @@ file:
     group: artemis
     filetype: file
     contains:
-{{ if (.Env.BASE_IMAGE | regexMatch "(openjdk\\:8.*)") }}
       - "-Djava.net.preferIPv4Addresses=true"
+{{ if (.Env.BASE_IMAGE | regexMatch "(openjdk\\:8.*)") }}
       - "-XX:+UnlockExperimentalVMOptions"
       - "-XX:+UseCGroupMemoryLimitForHeap"
       - "-XX:MaxRAMFraction=2"

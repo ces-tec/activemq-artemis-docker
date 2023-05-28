@@ -1,10 +1,12 @@
 #!/bin/sh
 set -e
-
 BROKER_HOME=/var/lib/artemis
 OVERRIDE_PATH=$BROKER_HOME/etc-override
 CONFIG_PATH=$BROKER_HOME/etc
 export BROKER_HOME OVERRIDE_PATH CONFIG_PATH
+MAJ_VER="$(echo "$ACTIVEMQ_ARTEMIS_VERSION" | awk -F"[.]" ' /[0..9]+/ {print $1}' -)"
+SUB_VER="$(echo "$ACTIVEMQ_ARTEMIS_VERSION" | awk -F"[.]" ' /[0..9]+/ {print $2}' -)"
+#MIN_VER="$(echo "$ACTIVEMQ_ARTEMIS_VERSION" | awk -F"[.]" ' /[0..9]+/ {print $3}' -)"
 
 # Prepends a value in the JAVA_ARGS of artemis.profile
 # $1 New string to be prepended to JAVA_ARGS
@@ -12,16 +14,6 @@ export BROKER_HOME OVERRIDE_PATH CONFIG_PATH
 prepend_java_arg() {
   # shellcheck disable=SC1117
   sed -i "\#$1#!s#^\([[:space:]]\)*JAVA_ARGS=\"#\\1JAVA_ARGS=\"$2 #g" $CONFIG_PATH/artemis.profile
-}
-
-# Returns true if the semver version in $1 is greater 
-# of equal than the one passed in $2
-# $1 input version
-# $2 comparison version
-semver_greater_or_equal_than() {
-  # shellcheck disable=SC2046
-  test $(semver "${1}" "${2}") -ge 0
-  return 
 }
 
 # In case this is running in a non standard system that automounts
@@ -34,7 +26,11 @@ fi
 
 # Update logger if the argument is passed
 if [ "$LOG_FORMATTER" = "JSON" ]; then
-    sed -i "s/handler.CONSOLE.formatter=.*/handler.CONSOLE.formatter=JSON/g" ../etc/logging.properties
+   if [ "$MAJ_VER" -eq 2 ] && [ "$SUB_VER" -le 26 ] ; then
+     sed -i "s/handler.CONSOLE.formatter=.*/handler.CONSOLE.formatter=JSON/g" ../etc/logging.properties
+   else
+     sed -i "s/console, log_file/console_json, log_file/g" ../etc/log4j2.properties
+   fi
 fi
 
 # Never use in a production environment
@@ -62,7 +58,7 @@ if [ -n "$ARTEMIS_USERNAME" ] && [ -n "$ARTEMIS_PASSWORD" ]; then
   sed -i "s/amq[ ]*=.*/amq=$ARTEMIS_USERNAME\\n/g" ../etc/artemis-roles.properties
 
   # Users update
-  HASHED_PASSWORD=$(${BROKER_HOME}/bin/artemis mask --hash "${ARTEMIS_PASSWORD}" | cut -d " " -f 2)
+  HASHED_PASSWORD="$(${BROKER_HOME}/bin/artemis mask --hash "${ARTEMIS_PASSWORD}" | cut -d " " -f 2)"
   sed -i "s/artemis[ ]*=.*/$ARTEMIS_USERNAME=ENC($HASHED_PASSWORD)\\n/g" ../etc/artemis-users.properties
 
 fi
@@ -88,7 +84,8 @@ mergeXmlFiles() {
 }
 
 files=$(find $OVERRIDE_PATH -name "broker*" -type f | sort -u );
-if [ ${#files[@]} ]; then
+echo "Files: '$files'"
+if [ "$files" ]; then
   for f in $files; do
     fnoext=${f%.*}
     if [ -f "$fnoext.xslt" ]; then
@@ -190,6 +187,7 @@ performanceJournal
 prepend_java_arg "BROKER_CONFIGS" "\$BROKER_CONFIGS"
 
 # Loop through all BROKER_CONFIG_... and convert to java system properties
+set -x
 env|grep -E "^BROKER_CONFIG_"|sed -e 's/BROKER_CONFIG_//g' >/tmp/brokerconfigs.txt
 while read -r config
 do
@@ -202,7 +200,7 @@ rm -f /tmp/brokerconfigs.txt
 export BROKER_CONFIGS
 
 files=$(find $OVERRIDE_PATH -name "entrypoint*.sh" -type f | sort -u );
-if [ ${#files[@]} ]; then
+if [ "$files" ]; then
   for f in $files; do
     echo "Processing entrypoint override: $f"
     /bin/sh "$f"
