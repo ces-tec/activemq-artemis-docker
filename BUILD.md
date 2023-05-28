@@ -28,14 +28,10 @@ make
 
 This will run the full build (with the exception of the deployment phase) for all versions presents in the filel `tags.csv`.
 
-To just build *just one version* you can call `make` with `VERSION[-VARIANT]` where variant can be `-alpine` for an Alpine based image build or just nothing for a Debian based one, e.g:
+To just build *just one version* you can call `make` with `VERSION` e.g:
 
 ```bash
 make 2.6.0
-```
-
-```bash
-make 2.6.0-alpine
 ```
 
 It is also possible to just build the image without testing with `make build_2.8.0`, just testing: `make test_2.8.0`, running the image: `make run_2.8.0` or even run the image for a shell `make runsh_2.8.0`.
@@ -44,3 +40,6 @@ You can also override the artemis binary distribution url by passing a parameter
 
 You can build without using the cache by setting REBUILD=y in the environment and suppress the --quiet switch by setting DEBUG=y
 
+```bash
+DEBUG=y REBUILD=y make 2.23.0
+```
