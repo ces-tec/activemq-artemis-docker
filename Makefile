@@ -4,11 +4,22 @@
 VERSIONS_FILE=tags.csv
 
 ALL_VERSION_TAGS=$(shell awk -F "," 'NR>1  {print $$2}' ${VERSIONS_FILE})
+ifeq ($(DEBUG),y)
+  DOCKER_ARGS=--progress=plain
+else
+  DOCKER_ARGS=--quiet
+endif
+ifeq ($(REBUILD),y)
+  DOCKER_ARGS+= --no-cache
+endif
+
 lookupFromTag=$(shell awk -F "," '$$2 == "$1" {print $$$2}' ${VERSIONS_FILE})
 lookupRepositoryFromTag=$(call lookupFromTag,$1, 1)
 lookupBaseImageFromTag=$(call lookupFromTag,$1, 3)
-lookupÀliasesFromTag=$(call lookupFromTag,$1, 4)
-lookupDockerfileFromTag=$(call lookupFromTag,$1, 5)
+lookupJREImageFromTag=$(call lookupFromTag,$1, 4)
+lookupÀliasesFromTag=$(call lookupFromTag,$1, 5)
+lookupDockerfileFromTag=$(call lookupFromTag,$1, 6)
+lookupDependencyVersionsFromTag=$(call lookupFromTag,$1, 7)
 
 getPart=$(word $2,$(subst -, ,$1))
 getVersionFromTag=$(call getPart,$1, 1)
@@ -20,8 +31,8 @@ getFullTagNameFromTag=$(call lookupRepositoryFromTag,$1):$(call getVersionFromTa
 
 build_%:
 	@cd src && \
-	echo Building version $* on $(call lookupBaseImageFromTag,$*) && \
-	docker build --quiet --build-arg ACTIVEMQ_ARTEMIS_VERSION=$(call getVersionFromTag,$*) --build-arg BASE_IMAGE=$(call lookupBaseImageFromTag,$*) $(BUILD_ARGS) -t $(call getFullTagNameFromTag,$*) -f $(call lookupDockerfileFromTag,$*) .
+	echo Building version $* on $(call lookupBaseImageFromTag,$*) with $(call lookupJREImageFromTag,$*) && \
+	docker build $(DOCKER_ARGS) --build-arg ACTIVEMQ_ARTEMIS_VERSION=$(call getVersionFromTag,$*) --build-arg BASE_IMAGE='$(call lookupBaseImageFromTag,$*)' --build-arg JRE_IMAGE='$(call lookupJREImageFromTag,$*)' --build-arg DEPENDENCY_VERSIONS='$(call lookupDependencyVersionsFromTag,$*)' $(BUILD_ARGS) -t $(call getFullTagNameFromTag,$*) -f $(call lookupDockerfileFromTag,$*) .
 
 tag_%:
 	@for alias in $(call lookupÀliasesFromTag,$*); do docker tag $(call getFullTagNameFromTag,$*) $$alias ; done
