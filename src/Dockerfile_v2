@@ -72,10 +72,10 @@ RUN  "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/bin/artemis" create artemi
 
 
 WORKDIR /opt/jgroupskubernetes
-RUN . ~/.bld_env && JGROUPS_KUBERNETES_VERSION=$(getDependencyVersion JGROUPS_KUBERNETES) && \
+RUN . ~/.bld_env && \
     java -jar /usr/share/java/ivy.jar -dependency org.jgroups.kubernetes jgroups-kubernetes \
-      "${JGROUPS_KUBERNETES_VERSION}" -retrieve "[artifact]-[revision](-[classifier]).[ext]" -types jar && \
-    rm jgroups-5.0.1.Final.jar # Artemis is bundled with v5.2.0+
+      "$(getDependencyVersion JGROUPS_KUBERNETES)" -retrieve "[artifact]-[revision](-[classifier]).[ext]" -types jar && \
+    rm "jgroups-$(getDependencyVersion JGROUPS_CORE).jar" # Artemis is bundled with a later version
 
 # JsonFormatter to enable JSON logging #148: After v2.26 Artemis uses Log4j2 not JBoss logging
 WORKDIR /opt/jsonformatter
