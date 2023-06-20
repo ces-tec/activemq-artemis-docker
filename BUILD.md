@@ -9,7 +9,7 @@ To build the ActiveMQ Artemis Docker Image the following tools are necessary:
 - Docker
 - Make
 - [goss and dgoss](https://github.com/goss-org/goss/blob/master/extras/dgoss/README.md)
-- shellcheck (snap install)
+- shellcheck
 - bats
 - jq
 - uuidgen (may need to install uuid and soft link as uuidgen depending on distro)
