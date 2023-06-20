@@ -2,13 +2,13 @@
 
 Since the author of the ["vromero"](https://github.com/vromero/activemq-artemis-docker) image - well done to him - stopped maintaining it at v2.16 I forked it here and will release new Artemis versions at [Docker Hub](https://hub.docker.com/r/qoricode/activemq-artemis) as they are released on "reasonable endeavours". Note I'm not maintaining the Alpine images and have switched the Debian Images to Debian Slim. 
 
-There are many convenient features such as merging snippets of configuration which are easier to manage than a monolithic broker.xml file, and simple switches to enable JSON logging or the Prometheus agent for example.
+There are many convenient features such as merging snippets of configuration which are easier to manage than a monolithic broker.xml file, and simple switches to enable JSON logging or the Prometheus agent for example. For usage information see below.
 
 ## 2. Usage
 
 ### 2.1 Breaking Artemis Changes
 
-Check the [Artemis release log](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) for breaking changes which will impact your Artemis configuration and/or client code. More often than not a version upgrade will require some work.
+Check the [Artemis release log](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) for breaking changes which will impact your Artemis configuration and/or client code. More often than not a version upgrade may require some work.
 
 ### 2.2 General Usage
 
