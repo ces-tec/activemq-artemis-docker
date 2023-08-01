@@ -8,7 +8,7 @@ There are many convenient features such as merging snippets of configuration whi
 
 ### 2.1 Breaking Artemis Changes
 
-Check the [Artemis release log](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) for breaking changes which will impact your Artemis configuration and/or client code. More often than not a version upgrade may require some work.
+Check the [Artemis release log](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) for breaking changes which will impact your Artemis configuration and/or client code.
 
 ### 2.2 General Usage
 
