@@ -1,0 +1,4 @@
+log4j version from artemis-pom (and check jgroups version)
+jgroups & jgroups kubernetes version from latest jgroups-kubernetes pom not using newer jgroups than Artemis
+jmx_exporter version as per latest jmx-prometheus-agent
+

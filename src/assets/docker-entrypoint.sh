@@ -28,8 +28,10 @@ fi
 if [ "$LOG_FORMATTER" = "JSON" ]; then
    if [ "$MAJ_VER" -eq 2 ] && [ "$SUB_VER" -le 26 ] ; then
      sed -i "s/handler.CONSOLE.formatter=.*/handler.CONSOLE.formatter=JSON/g" ../etc/logging.properties
-   else
+   elif [ "$MAJ_VER" -eq 2 ] && [ "$SUB_VER" -le 30 ] ; then
      sed -i "s/console, log_file/console_json, log_file/g" ../etc/log4j2.properties
+   else
+     sed -i "s/appenderRef.console.ref = console/appenderRef.console.ref = console_json/g" ../etc/log4j2.properties
    fi
 fi
 

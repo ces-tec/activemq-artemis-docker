@@ -15,6 +15,8 @@ Check the [Artemis release log](https://activemq.apache.org/components/artemis/d
 Prebuilt docker images from this project are available at Docker Hub as noted above but in order to use them, see the general usage
 instructions of the parent project [here](https://github.com/vromero/activemq-artemis-docker/blob/master/README.md), noting the changes detailed below.
 
+Note that since v2.30 the Artemis maintainers have been publishing official images to Docker Hub too - see [here](https://activemq.apache.org/components/artemis/documentation/latest/docker.html).
+
 ### 2.3 Docker Build Changes Since v2.16
 
 Fixed a few minor issues (from my point of view) - 
