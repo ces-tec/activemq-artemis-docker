@@ -1,4 +1,6 @@
 log4j version from artemis-pom (and check jgroups version)
-jgroups & jgroups kubernetes version from latest jgroups-kubernetes pom not using newer jgroups than Artemis
-jmx_exporter version as per latest jmx-prometheus-agent
+jgroups & jgroups kubernetes version from latest jgroups-kubernetes pom not using newer jgroups than Artemis (docker build needs to delete the given jgroups jar version from the jgroups kubernetes distribution as artemis is bundled with a later version)
+jmx_exporter version as per latest https://github.com/prometheus/jmx_exporter
+jre version as per https://hub.docker.com/_/eclipse-temurin/tags?page=1&name=17.0
+os version as per https://hub.docker.com/_/debian/tags?page=1&name=bookworm-
 
