@@ -24,7 +24,7 @@ RUN echo -e "\ngetDependencyVersion () {\n  for version in $DEPENDENCY_VERSIONS 
     echo MAJ_VER="$(echo "$ACTIVEMQ_ARTEMIS_VERSION" | awk -F"[.]" ' /[0..9]+/ {print $1} ')" >>~/.bld_env && \
     echo SUB_VER="$(echo "$ACTIVEMQ_ARTEMIS_VERSION" | awk -F"[.]" ' /[0..9]+/ {print $2} ')" >>~/.bld_env && \
     apt-get -qq -o=Dpkg::Use-Pty=0 update && \
-    apt-get -qq -o=Dpkg::Use-Pty=0 install -y --no-install-recommends \
+    apt-get -qq -o=Dpkg::Use-Pty=0 install -y --allow-downgrades --no-install-recommends \
       gpg=2.2.27-3ubuntu2.1 \
       gpg-agent=2.2.27-3ubuntu2.1 \
       ivy=2.5.0-2 \
@@ -90,6 +90,7 @@ WORKDIR /var/lib/artemis/etc
 # Log to tty to enable docker logs container-name
 # Add JSON log handler: After v2.26 Artemis uses Log4j2 not JBoss logging
 # hadolint ignore=SC2086,SC2016
+
 RUN . ~/.bld_env && \
     if [[ $MAJ_VER -eq 2 && $SUB_VER -le 26 ]] ; then \
       sed -i "s/logger.handlers=.*/logger.handlers=CONSOLE/g" logging.properties && \
@@ -200,6 +201,8 @@ EXPOSE 1883
 EXPOSE 61613
 
 WORKDIR /var/lib/artemis/bin
+
+RUN chown -R artemis:artemis /var/lib
 
 USER artemis
 
